@@ -981,7 +981,7 @@ void* status_report(void* data)
             dev_event_data[1] =
 
                     .type  = LEDA_TYPE_ENUM,
-                    .key   = {"error"},
+                    .key   = {"Faultreport"},
                     .value = {"0"}//无故障//1传感器故障
 
             leda_report_event(g_dev_handle_list[i], "Faultreport", dev_event_data, 1);*/
@@ -1295,7 +1295,7 @@ void SNAI_DEVICE_RS485_ADDR_HANDLE(device_handle_t SNAI_handle,char *RS485_ADDR)
             SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[i] = SNAI_handle;//解析数据读取此处线程号，作为ptr数据存储下标
 						SNAI_DEBUG_INFO("当前线程号作为下标【%d】",SNAI_handle);
             SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_handle] = DEVICE_PAR_Ptr;//线程号对应上报数据 存放地址
-            if(i == 2 || i == 3 || i == 4 || i == 5 )
+            if(i == 2 || i == 3 || i == 4 || i == 5  || i == 17)
             {
                 SNAI_ALL_DEVICE_REPORT.Parameter_count[SNAI_handle] = 2;//参数个数
                 DEVICE_PAR_Ptr += 2;//下次存放地址offset
