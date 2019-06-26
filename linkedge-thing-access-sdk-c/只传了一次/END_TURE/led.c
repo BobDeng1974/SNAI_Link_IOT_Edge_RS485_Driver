@@ -518,7 +518,7 @@ void* tlv_decode_start(void* data)
 
 //假设读取0-5数据地址=则长度为6个字节 6作为下一次读取地址起始位OK
             if (((msg_type != SNAI_MSG_TYPE_DATA) && (msg_type != 0x11) && (msg_type2 != SNAI_MSG_TYPE_DATA2))
-                            || (msg_len < SNAI_MSG_MIN_LEN)) //类型不是0xFF and not is 0xEE/0x11，或者长度小于6。皆属于解码错误
+                            || (msg_len < SNAI_MSG_MIN_LEN)) //类型不是0xFF and not is 0xEE/0x11，或者长度小于8。皆属于解码错误
             {
 								SNAI_DEBUG_INFO("解码错误！"); 
                 printf("pre decode err !\r\n");
@@ -592,8 +592,8 @@ void* tlv_decode_start(void* data)
             }
         }
 				
-        usleep(500);//us级挂起线程
-				sleep(2);
+        usleep(500000);//us级挂起线程
+				sleep(1);
     }
     return NULL;
 }
@@ -951,15 +951,14 @@ void* status_report(void* data)
     while (1)
     {
 				pthread_mutex_trylock(&SNAI_Decode_mutex_lock);
-				Para_num = 0;
-				temp = 0;
         for (i = 0; i < g_dev_handle_count; i++)
         {
 						
             if(SNAI_ALL_DEVICE_REPORT.SNAI_device_ready[i] == 1)
             {
 		          /* report device properties */
-              temp = Para_num+SNAI_ALL_DEVICE_REPORT.Parameter_count[i];
+              temp = SNAI_ALL_DEVICE_REPORT.Parameter_ptr[i]+SNAI_ALL_DEVICE_REPORT.Parameter_count[i];
+							SNAI_DEBUG_INFO("最大偏移至数组下标【%d】",temp);
               for(Para_num = SNAI_ALL_DEVICE_REPORT.Parameter_ptr[i];Para_num < temp;Para_num++)
 		          {
 									if(0 < strlen(dev_proper_data[Para_num].value))
