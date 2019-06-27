@@ -573,7 +573,6 @@ void* tlv_decode_start(void* data)
                     SNAI_DEBUG_INFO("解析传感数据值-->");
                     tlv_decode(cb);
                     cb_read_offset_inc(cb, msg_len);
-                    cb_read_offset_inc(cb, msg_len_water_meter);
 										//pthread_cond_signal(&SNAI_cond);
 										pthread_mutex_unlock(&SNAI_Decode_mutex_lock);
                 }
