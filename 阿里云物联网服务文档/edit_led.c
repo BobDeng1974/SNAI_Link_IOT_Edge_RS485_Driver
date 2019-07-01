@@ -1218,7 +1218,7 @@ void* status_report(void* data)
 void* TX_READ(void* data)
 {
     SNAI_circular_buffer *cb = (SNAI_circular_buffer *) (data);
-    unsigned char SNAI_DEVICE_ReadBUFF[9] = {0xFF,0xEE,0x08,0x02,0x52,0x01,0xE2,0xC2};
+    unsigned char SNAI_DEVICE_ReadBUFF[8] = {0xFF,0xEE,0x08,0x02,0x52,0x01,0xE2,0xC2};
     static unsigned short times = 1;
     unsigned short SNAI_TX_CRC_value = 0;
     unsigned char SNAI_TX_CRC_value_L = 0;
@@ -1323,7 +1323,7 @@ static int get_properties_callback_cb(device_handle_t dev_handle,
 		"CurrentWater_Yield",
 		"CurrentFlow_Rate"
 											};
-    unsigned char  SNAI_GET_DEVICE_ReadBUFF[9] = {0xFF,0xEE,0x08,0x02,0x52,0x01,0xE2,0xC2};
+    unsigned char  SNAI_GET_DEVICE_ReadBUFF[8] = {0xFF,0xEE,0x08,0x02,0x52,0x01,0xE2,0xC2};
     unsigned short SNAI_GET_CRC_value   = 0;
     unsigned char  SNAI_GET_CRC_value_L = 0;
     unsigned char  SNAI_GET_CRC_value_H = 0;
