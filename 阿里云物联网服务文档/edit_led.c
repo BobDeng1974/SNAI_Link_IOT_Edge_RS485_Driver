@@ -1572,31 +1572,31 @@ void SNAI_DEVICE_RS485_ADDR_HANDLE(device_handle_t SNAI_handle,char *RS485_ADDR)
 }
 int main(int argc, char** argv)
 {
-		int    ret         = LE_SUCCESS;
-    char*  module_name = NULL;
-		SNAI_log_init();
-    log_init(LED_TAG_NAME, LOG_STDOUT, LOG_LEVEL_DEBUG, LOG_MOD_BRIEF);
-		SNAI_DEBUG_INFO("demo startup！");
-    log_i(LED_TAG_NAME, "demo startup\r\n");
-		for(int snaist = 0;snaist < ALL_DEVICE_COUNT+1;snaist++)
-		{
-			SNAI_ALL_DEVICE_REPORT.SNAI_DEVICE_EXIST[snaist] = 0;
-            SNAI_ALL_DEVICE_REPORT.SNAI_485dev_Data_Filtration_Flag[snaist] = 0;
-		}
+        int    ret         = LE_SUCCESS;
+        char*  module_name = NULL;
+        SNAI_log_init();
+        log_init(LED_TAG_NAME, LOG_STDOUT, LOG_LEVEL_DEBUG, LOG_MOD_BRIEF);
+        SNAI_DEBUG_INFO("demo startup！");
+        log_i(LED_TAG_NAME, "demo startup\r\n");
+        for(int snaist = 0;snaist < ALL_DEVICE_COUNT+1;snaist++)
+        {
+                SNAI_ALL_DEVICE_REPORT.SNAI_DEVICE_EXIST[snaist] = 0;
+                SNAI_ALL_DEVICE_REPORT.SNAI_485dev_Data_Filtration_Flag[snaist] = 0;
+        }
 
     /* 初始驱动 */
     module_name = leda_get_module_name();//获取设备接入驱动名称（该名称为在物联网平台控制台上传驱动时填写的驱动名称）,读取环境变量参数值
     if (NULL == module_name)
     {
-				SNAI_DEBUG_INFO("模块名称未知退出！！");
+        SNAI_DEBUG_INFO("模块名称未知退出！！");
         log_e(LED_TAG_NAME, "the driver no deploy or deploy failed\r\n");
         return LE_ERROR_UNKNOWN;
     }
-		SNAI_DEBUG_INFO("模块名称【%s】",module_name);
+    SNAI_DEBUG_INFO("模块名称【%s】",module_name);
   
     if (LE_SUCCESS != (ret = leda_init(module_name, 5)))//接口完成资源初始化
     {
-		SNAI_DEBUG_INFO("模块初始化失败退出！！\n");
+        SNAI_DEBUG_INFO("模块初始化失败退出！！\n");
         log_e(LED_TAG_NAME, "leda_init failed\r\n");
         return ret;
     }
@@ -1604,14 +1604,14 @@ int main(int argc, char** argv)
     /* 解析配置 */
     if (LE_SUCCESS != (ret = get_and_parse_deviceconfig(module_name)))
     {
-				SNAI_DEBUG_INFO("解析配置失败！！");
+        SNAI_DEBUG_INFO("解析配置失败！！");
         log_e(LED_TAG_NAME, "parse device config failed\r\n");
         return ret;
     }
 	/////////////////////////////////////////////////////////////////////////	
 		
 	/* 8K rx cache for usart rx*/
-    SNAI_circular_buffer* cb_usart_rx = cb_create(13);//建立环形缓冲区
+        SNAI_circular_buffer* cb_usart_rx = cb_create(13);//建立环形缓冲区
 	SNAI_pthread_opt_user pthread_user_seq[] =//声明.结构体数组，4个元素，每个元素依次：函数指针、void型指针变量、线程id
 	{
 		{TX_READ, cb_usart_rx},//元素1，数组【0】，因每个元素是结构体所以具有大括号{}
@@ -1624,7 +1624,7 @@ int main(int argc, char** argv)
         
 	opt_seq_ptr = pthread_user_seq;//opt_seq_ptr指向pthread_user_seq，函数队列usart_rx_start、tlv_decode_start、status_minitor
 /*
- * 		SIGINT   2    采用ctrl+c产生该信号
+ * 	SIGINT   2    采用ctrl+c产生该信号
         SIGQUIT  3    采用ctrl+\产生该信号
         SIGKILL  9    采用kill -9产生该信号
  *
@@ -1634,7 +1634,7 @@ int main(int argc, char** argv)
 	signal(SIGTERM, main_thread_hander);//可以被阻塞、处理和忽略
 	usart_init();
 	
-    SNAI_DEBUG_INFO("初始化完成！");
+        SNAI_DEBUG_INFO("初始化完成！");
 	pthread_opt_seq_exec(pthread_user_seq);
 
 	printf("clean up!\r\n");
