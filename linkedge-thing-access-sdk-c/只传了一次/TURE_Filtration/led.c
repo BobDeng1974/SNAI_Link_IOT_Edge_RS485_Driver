@@ -775,7 +775,7 @@ void tlv_decode(SNAI_circular_buffer *cb)
                             strcpy(dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[6]]].key ,"CurrentTemperature");
                             sprintf(dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[6]]].value,"%.1f",float_temp);
                             //gcvt(float_temp, 3, dev_proper_data[0].value);
-                            SNAI_DEBUG_INFO("获取6#水温数正值【%.1f】",float_temp);
+                            SNAI_DEBUG_INFO("获取6#水温数正值【%.1f℃】",float_temp);
                             //SNAI_ALL_DEVICE_REPORT.SNAI_device_ready[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[6]] = 1;
                         	}
 												}
@@ -1034,8 +1034,8 @@ bool SNAI_RS485_DATA_Filtration(unsigned char RS485_ADDR,void *data,unsigned cha
 						case 0x06:		
 			    if(SNAI_ALL_DEVICE_OLD_DATA.SNAI_485dev_OLD_DATA_TMP[RS485_ADDR] == float_tmp && 																					  SNAI_ALL_DEVICE_REPORT.SNAI_485dev_Data_Filtration_Flag[RS485_ADDR] != 0)//当前值等于上次值，且第二次进入！则不上报数据！否则当前值写入旧数据，作为下次判断依据。
 							{
-									Check_Filtration_Timeout(RS485_ADDR);
-                                                                        SNAI_DEBUG_INFO("温度重复，超时检测中...");
+									SNAI_DEBUG_INFO("温度重复，超时检测中...");
+									Check_Filtration_Timeout(RS485_ADDR);                                                        
 							}
 							else
 							{
@@ -1056,8 +1056,8 @@ bool SNAI_RS485_DATA_Filtration(unsigned char RS485_ADDR,void *data,unsigned cha
                         case 0x0C:
                                 if(SNAI_ALL_DEVICE_OLD_DATA.SNAI_485dev_OLD_DATA_INT[RS485_ADDR] == other_data && 																					  SNAI_ALL_DEVICE_REPORT.SNAI_485dev_Data_Filtration_Flag[RS485_ADDR] != 0)//当前值等于上次值，且第二次进入！则不上报数据！否则当前值写入旧数据，作为下次判断依据。
                                 {
+																								SNAI_DEBUG_INFO("地址【%u】数据重复，超时检测中...",RS485_ADDR);
                                                 Check_Filtration_Timeout(RS485_ADDR);
-                                                SNAI_DEBUG_INFO("地址【%u】数据重复，超时检测中...",RS485_ADDR);
                                 }
                                 else
                                 {
@@ -1073,8 +1073,8 @@ bool SNAI_RS485_DATA_Filtration(unsigned char RS485_ADDR,void *data,unsigned cha
                         case 0x11:
                                 if(SNAI_ALL_DEVICE_OLD_DATA.SNAI_485dev_OLD_DATA_Flow_Rate_17 == Accumulate_value && 																					  SNAI_ALL_DEVICE_REPORT.SNAI_485dev_Data_Filtration_Flag[RS485_ADDR] != 0)//当前值等于上次值，且第二次进入！则不上报数据！否则当前值写入旧数据，作为下次判断依据。
                                 {
+																								SNAI_DEBUG_INFO("水表流量数据重复，超时检测中...");
                                                 Check_Filtration_Timeout(RS485_ADDR);
-                                                SNAI_DEBUG_INFO("水表流量数据重复，超时检测中...");
                                 }
                                 else
                                 {
@@ -1156,7 +1156,8 @@ bool Check_Filtration_Timeout(unsigned char addr)
         }
         if(59 <= SNAI_ALL_DEVICE_REPORT.SNAI_485dev_Data_Filtration_Date_Origin_M[addr]+SNAI_Filtration_Timeout)//以上
         {
-                if(Current_date_Min <= abs(59-SNAI_ALL_DEVICE_REPORT.SNAI_485dev_Data_Filtration_Date_Origin_M[addr]-SNAI_Filtration_Timeout))//超时
+								int abs_value = abs(59-SNAI_ALL_DEVICE_REPORT.SNAI_485dev_Data_Filtration_Date_Origin_M[addr]-SNAI_Filtration_Timeout);
+                if(Current_date_Min <= abs_value && Current_date_Min >= abs(abs_value-2))//超时
 				{
                                         SNAI_ALL_DEVICE_REPORT.SNAI_device_ready[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[addr]] = 1;//更新
                         		SNAI_ALL_DEVICE_REPORT.SNAI_485dev_Data_Filtration_Date_Origin_M[addr] = Current_date_Min;//更新最近时间分钟
