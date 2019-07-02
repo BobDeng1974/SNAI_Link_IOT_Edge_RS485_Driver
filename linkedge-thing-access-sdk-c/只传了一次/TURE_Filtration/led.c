@@ -556,7 +556,7 @@ void* tlv_decode_start(void* data)
             msg_len_water_meter = (*((unsigned char*) (cb->ptr + cb->read_offset + 2)))+5; //水表情况下，数据长度
 
 //假设读取0-5数据地址=则长度为6个字节 6作为下一次读取地址起始位OK
-            if (((msg_type != SNAI_MSG_TYPE_DATA) && (msg_type != 0x11)) || (msg_len < SNAI_MSG_MIN_LEN))
+            if (((msg_type != SNAI_MSG_TYPE_DATA && msg_type2 != SNAI_MSG_TYPE_DATA2) && (msg_type != 0x11)) || (msg_len < SNAI_MSG_MIN_LEN))
                              //头不是0xFF and not is 0x11，或者长度小于8。皆属于解码错误
             {
 								SNAI_DEBUG_INFO("解码错误！");
@@ -698,15 +698,18 @@ void tlv_decode(SNAI_circular_buffer *cb)
                     case SNAI_TYPE_Boiler:
                     case SNAI_TYPE_tmpt:
                     case SNAI_TYPE_out_tmpt:
-                        if(SNAI_ALL_DEVICE_REPORT.SNAI_DEVICE_EXIST[6] == 1)
+												if(SNAI_all_device_value[3] == 0x06)//6#SB
                         {
+                        	if(SNAI_ALL_DEVICE_REPORT.SNAI_DEVICE_EXIST[6] == 1)
+                        	{
                             dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[6]]].type = LEDA_TYPE_DOUBLE;//LEDA_TYPE_TEXT;//LEDA_TYPE_FLOAT;//浮点
                             strcpy(dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[6]]].key ,"CurrentTemperature");
                             sprintf(dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[6]]].value,"%.1f",float_temp);
                             //gcvt(float_temp, 3, dev_proper_data[0].value);
                             SNAI_DEBUG_INFO("获取6#水温数负值【%.1f℃】",float_temp);
                             //SNAI_ALL_DEVICE_REPORT.SNAI_device_ready[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[6]] = 1;
-                        }     
+                        	}
+											}     
                         if(SNAI_all_device_value[3] == 0x02)//2#WSD
                         {
                             if(SNAI_ALL_DEVICE_REPORT.SNAI_DEVICE_EXIST[2] == 1)
@@ -764,15 +767,18 @@ void tlv_decode(SNAI_circular_buffer *cb)
                     case SNAI_TYPE_Boiler:
                     case SNAI_TYPE_tmpt:
                     case SNAI_TYPE_out_tmpt:
-                        if(SNAI_ALL_DEVICE_REPORT.SNAI_DEVICE_EXIST[6] == 1)
+											if(SNAI_all_device_value[3] == 0x06)//6#SB
                         {
+                        	if(SNAI_ALL_DEVICE_REPORT.SNAI_DEVICE_EXIST[6] == 1)
+                        	{
                             dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[6]]].type = LEDA_TYPE_DOUBLE;
                             strcpy(dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[6]]].key ,"CurrentTemperature");
                             sprintf(dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[6]]].value,"%.1f",float_temp);
                             //gcvt(float_temp, 3, dev_proper_data[0].value);
                             SNAI_DEBUG_INFO("获取6#水温数正值【%.1f】",float_temp);
                             //SNAI_ALL_DEVICE_REPORT.SNAI_device_ready[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[6]] = 1;
-                        }
+                        	}
+												}
                         if(SNAI_all_device_value[3] == 0x02)//2#WSD
                         {
                             if(SNAI_ALL_DEVICE_REPORT.SNAI_DEVICE_EXIST[2] == 1)
@@ -823,6 +829,7 @@ void tlv_decode(SNAI_circular_buffer *cb)
                         break;
                     }
                 }
+								SNAI_RS485_DATA_Filtration(SNAI_all_device_value[3],&float_temp,0);//温度检测 
                 if(SNAI_all_device_value[3] == 0x02 || SNAI_all_device_value[3] == 0x03 || SNAI_all_device_value[3] == 0x04
                         || SNAI_all_device_value[3] == 0x05)//湿度解析
                 {
@@ -870,10 +877,10 @@ void tlv_decode(SNAI_circular_buffer *cb)
                             break;
                         default:
                            break;
-                    }  
+                    }
+										SNAI_RS485_DATA_Filtration(SNAI_all_device_value[3],&float_Humi_temp,1);//湿度检测
                 }
-                SNAI_RS485_DATA_Filtration(SNAI_all_device_value[3],&float_temp,0);//温度检测
-		SNAI_RS485_DATA_Filtration(SNAI_all_device_value[3],&float_Humi_temp,1);//湿度检测
+								
             break;
         case SNAI_TYPE_Co2:
             if(SNAI_ALL_DEVICE_REPORT.SNAI_DEVICE_EXIST[8] == 1)
@@ -1094,8 +1101,9 @@ bool SNAI_RS485_DATA_Filtration(unsigned char RS485_ADDR,void *data,unsigned cha
                             if(SNAI_ALL_DEVICE_OLD_DATA.SNAI_485dev_OLD_DATA_Humi[RS485_ADDR] == float_tmp)//当前值等于上次值，则不上报数据！否则当前值写入旧数据，作为下次判断依据。
                             {
                                     //温度的超时检测结果
-                                    SNAI_DEBUG_INFO("上次值【%u】",SNAI_ALL_DEVICE_REPORT.SNAI_485dev_Data_Filtration_Flag[RS485_ADDR]);
-                                    if(SNAI_ALL_DEVICE_REPORT.SNAI_485dev_Data_Filtration_Flag[RS485_ADDR])
+																		SNAI_DEBUG_INFO("温度重复，判断温度更新需求...");
+                                    SNAI_DEBUG_INFO("地址【%u】上次值【%u】",RS485_ADDR,SNAI_ALL_DEVICE_REPORT.SNAI_device_ready[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[RS485_ADDR]]);
+                                    if(SNAI_ALL_DEVICE_REPORT.SNAI_device_ready[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[RS485_ADDR]])
                                     {
                                         SNAI_ALL_DEVICE_REPORT.SNAI_device_ready[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[RS485_ADDR]] = 1;//强制更新
                                         SNAI_DEBUG_INFO("【强制更新！】");
@@ -1143,7 +1151,7 @@ bool Check_Filtration_Timeout(unsigned char addr)
                 else//未达到SNAI_Filtration_Timeout  min超时
                         {
                                         SNAI_ALL_DEVICE_REPORT.SNAI_device_ready[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[addr]] = 0;//禁止更新
-                                        SNAI_DEBUG_INFO("禁止更新触发！");
+                                        SNAI_DEBUG_INFO("地址【%u】禁止更新触发！【%u】",addr,SNAI_ALL_DEVICE_REPORT.SNAI_device_ready[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[addr]]);
                         }
         }
         if(59 <= SNAI_ALL_DEVICE_REPORT.SNAI_485dev_Data_Filtration_Date_Origin_M[addr]+SNAI_Filtration_Timeout)//以上
@@ -1158,7 +1166,7 @@ bool Check_Filtration_Timeout(unsigned char addr)
                 else//未达到SNAI_Filtration_Timeout  min超时
                         {
                                         SNAI_ALL_DEVICE_REPORT.SNAI_device_ready[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[addr]] = 0;//禁止更新
-                                        SNAI_DEBUG_INFO("禁止更新触发！");
+                                        SNAI_DEBUG_INFO("地址【%u】禁止更新触发！【%u】",addr,SNAI_ALL_DEVICE_REPORT.SNAI_device_ready[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[addr]]);
                         }
         }
 
@@ -1405,7 +1413,8 @@ static int call_service_callback_cb(device_handle_t dev_handle,
 		"Alarm_Boiler",
 		"Alarm_Negative_pressure",
 		"Alarm_Co2",
-		"Alarm_Temp"
+		"Alarm_Temp",
+		"Over_Timeout"
 										};
     int i = 0;
     /* service_name为该驱动物模型自定义方法名称 */
