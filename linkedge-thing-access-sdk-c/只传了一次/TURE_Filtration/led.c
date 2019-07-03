@@ -1101,7 +1101,7 @@ bool SNAI_RS485_DATA_Filtration(unsigned char RS485_ADDR,void *data,unsigned cha
                             if(SNAI_ALL_DEVICE_OLD_DATA.SNAI_485dev_OLD_DATA_Humi[RS485_ADDR] == float_tmp)//当前值等于上次值，则不上报数据！否则当前值写入旧数据，作为下次判断依据。
                             {
                                     //温度的超时检测结果
-																		SNAI_DEBUG_INFO("温度重复，判断温度更新需求...");
+                                    SNAI_DEBUG_INFO("湿度重复，判断温度更新需求...");
                                     SNAI_DEBUG_INFO("地址【%u】上次值【%u】",RS485_ADDR,SNAI_ALL_DEVICE_REPORT.SNAI_device_ready[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[RS485_ADDR]]);
                                     if(SNAI_ALL_DEVICE_REPORT.SNAI_device_ready[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[RS485_ADDR]])
                                     {
