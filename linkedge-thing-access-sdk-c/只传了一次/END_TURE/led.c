@@ -994,7 +994,7 @@ void* status_report(void* data)
 void* TX_READ(void* data)
 {
     SNAI_circular_buffer *cb = (SNAI_circular_buffer *) (data);
-    unsigned char SNAI_DEVICE_ReadBUFF[9] = {0xFF,0xEE,0x08,0x02,0x52,0x01,0xE2,0xC2};
+    unsigned char SNAI_DEVICE_ReadBUFF[8] = {0xFF,0xEE,0x08,0x02,0x52,0x01,0xE2,0xC2};
     static unsigned short times = 1;
     unsigned short SNAI_TX_CRC_value = 0;
     unsigned char SNAI_TX_CRC_value_L = 0;
