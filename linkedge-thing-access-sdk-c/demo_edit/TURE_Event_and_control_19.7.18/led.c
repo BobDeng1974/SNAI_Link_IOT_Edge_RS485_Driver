@@ -332,6 +332,13 @@ static char *SNAI_get_timestamp(char *buf, int len, time_t cur_time)
              tm_time.tm_mday, tm_time.tm_hour,
              tm_time.tm_min, tm_time.tm_sec);
         if(SNAI_Origin_Day != tm_time.tm_mday && tm_time.tm_hour == 0)SNAI_log_init();
+			/*
+	status = unlink(path);
+	if (0 != status)
+	{
+		printf("unlink failed \n");
+		abort();
+	}*/
 	
     return buf;
 }
@@ -514,7 +521,7 @@ int SNAI_log_init(void)
 		SNAI_Origin_Day = tp->tm_mday;//首次 
     sprintf(SNAI_LOG_File_TIME,"/dev/shm/SNAI_LOG-%d-%u-%d-%d-%d.txt",tp->tm_year+1900,tp->tm_mon+1,tp->tm_mday 
    			,tp->tm_hour,tp->tm_min); 
-		if((SNAI_log_id = open(SNAI_LOG_File_TIME,O_CREAT | O_RDWR | O_APPEND | O_NONBLOCK,S_IWGRP | S_IWGRP ))<0)//创建日志文件
+		if((SNAI_log_id = open(SNAI_LOG_File_TIME,O_CREAT | O_RDWR | O_APPEND | O_NONBLOCK,S_IWGRP | S_IROTH ))<0)//创建日志文件
 		{
 			SNAI_DEBUG_INFO("log_file open failed");
 			perror("LOG: Failed to open the SNAI_log! \n");
@@ -1548,7 +1555,14 @@ void* status_report(void* data)
 				SNAI_DEBUG_INFO("解锁！");
 				pthread_mutex_unlock(&SNAI_Decode_mutex_lock);
 				SNAI_DEBUG_INFO("挂起本线程%us！",SNAI_Period_Set.SNAI_Gateway_Report_Period);
-        sleep(SNAI_Period_Set.SNAI_Gateway_Report_Period);//Origin_2s
+        if(SNAI_Period_Set.SNAI_Gateway_Report_Period == 0)
+		{
+			usleep(150000);//最快上报频率
+		}
+		else
+		{
+        	sleep(SNAI_Period_Set.SNAI_Gateway_Report_Period);//Origin_2s
+		}
     }
 }
 
