@@ -1,0 +1,13 @@
+启动会检查文件夹中是否具有配置文件
+
+若没有则
+生成配置文件在/linkedge/run/SNAI_cnf.ini
+并将配置信息中
+[CONFIG_FLAG]
+CONFIG_ENABLE = 1
+
+如有则
+读取配置文件信息
+CONFIG_ENABLE 项
+是1则读取配置
+是0则写入当前运行参数到配置文件
