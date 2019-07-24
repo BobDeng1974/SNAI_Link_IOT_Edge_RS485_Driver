@@ -2104,12 +2104,12 @@ void* TX_READ(void* data)
 											if(SNAI_ALL_DEVICE_REPORT.SNAI_DEVICE_EXIST[dev_addr_c] == 1)
 												current_device_cunt++;
 									}
-									current_device_cunt -= 2;//去掉自身和虚拟网关设备
+									current_device_cunt -= 1;//去掉虚拟网关设备
 									if(current_device_cunt < 1)current_device_cunt = 1;//最小保证
 							}
 							else
 							{
-									SNAI_Period_Set.SNAI_polling_cycle[SNAI_485_ADDR] = 5;//第一次，立刻轮寻
+									SNAI_Period_Set.SNAI_polling_cycle[SNAI_485_ADDR] = SNAI_Period_Set.SNAI_485dev_Polling_Period[SNAI_485_ADDR]/100;//第一次，立刻轮寻
 									TX_first_polling_flag = 1;
 							}	
 	            if(SNAI_ALL_DEVICE_REPORT.SNAI_DEVICE_EXIST[SNAI_485_ADDR] == 1)//设备存在，polling this addr
