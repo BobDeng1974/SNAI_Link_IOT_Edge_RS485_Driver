@@ -1,13 +1,31 @@
-启动会检查文件夹中是否具有配置文件
+led_version.c
+启动会检查文件夹中是否具有配置文件？
 
-若没有则
+若没有则？
 生成配置文件在/linkedge/run/SNAI_cnf.ini
-并将配置信息中
+如有则？
+读取配置文件信息
+CONFIG_ENABLE 项
+
+是1则读取配置
+判断软件版本号是否一致？
+[IBS_LED_Ver]
+不一致则更新版本，且将
+[CONFIG_FLAG]
+CONFIG_ENABLE = 0
+网关默认开启，其他各设备重新载入一次开关状态标志位
+完毕后将配置信息中
+[CONFIG_FLAG]
+CONFIG_ENABLE = 1
+版本一致则什么都不做
+
+是0则
+写入软件版本
+[IBS_LED_Ver] = *****
+网关默认开启，其他各设备首次载入一次开关状态标志位
+完毕后将配置信息中
 [CONFIG_FLAG]
 CONFIG_ENABLE = 1
 
-如有则
-读取配置文件信息
-CONFIG_ENABLE 项
-是1则读取配置
-是0则写入当前运行参数到配置文件
+
+

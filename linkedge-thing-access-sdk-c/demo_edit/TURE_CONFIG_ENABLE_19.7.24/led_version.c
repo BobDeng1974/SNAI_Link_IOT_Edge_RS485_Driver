@@ -346,7 +346,7 @@ void SNAI_driver_exit(int xx);
 void* TX_READ(void* data);
 static char *SNAI_get_timestamp(char *buf, int len, time_t cur_time);
 void SNAI_DEVICE_RS485_ADDR_HANDLE(device_handle_t SNAI_handle,char *RS485_ADDR);
-bool SNAI_RS485_DATA_Filtration(unsigned char RS485_ADDR,void *data,unsigned char Parameter_n); 
+bool SNAI_RS485_DATA_Filtration(unsigned char RS485_ADDR,void *data,unsigned char Parameter_n,unsigned char type); 
 bool Check_Filtration_Timeout(unsigned char addr);
 //void cb_read_offset_sync(SNAI_circular_buffer *cb);
 /////////////////////////////////////////////////////////////////////////
@@ -483,9 +483,17 @@ SNAI_Config *SNAI_cnf_read_config(const char *filename, char comment, char separ
 			SNAI_cnf_add_option(cnf, "485_Gateway", "Period_Time", "1");
 			SNAI_cnf_add_option(cnf, "485_Gateway", "Over_Timeout", "30");
 
+			SNAI_cnf_add_option(cnf, "485_DEV_0", "Power_Switch", "0");
+			SNAI_cnf_add_option(cnf, "485_DEV_0", "Period_Time", "900");
+			SNAI_cnf_add_option(cnf, "485_DEV_0", "Over_Timeout", "30");
+			SNAI_cnf_add_option(cnf, "485_DEV_0", "Alarm_Temp", "20.0");
+			SNAI_cnf_add_option(cnf, "485_DEV_0", "Alarm_Humi", "80.0");
+
 			SNAI_cnf_add_option(cnf, "485_DEV_1", "Power_Switch", "0");
 			SNAI_cnf_add_option(cnf, "485_DEV_1", "Period_Time", "900");
 			SNAI_cnf_add_option(cnf, "485_DEV_1", "Over_Timeout", "30");
+			SNAI_cnf_add_option(cnf, "485_DEV_1", "Alarm_Temp", "20.0");
+			SNAI_cnf_add_option(cnf, "485_DEV_1", "Alarm_Humi", "80.0");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_2", "Power_Switch", "0");
 			SNAI_cnf_add_option(cnf, "485_DEV_2", "Period_Time", "900");
@@ -584,28 +592,35 @@ SNAI_Config *SNAI_cnf_read_config(const char *filename, char comment, char separ
 			SNAI_cnf_add_option(cnf, "485_DEV_20", "Power_Switch", "0");
 			SNAI_cnf_add_option(cnf, "485_DEV_20", "Period_Time", "900");
 			SNAI_cnf_add_option(cnf, "485_DEV_20", "Over_Timeout", "30");
-			SNAI_cnf_add_option(cnf, "485_DEV_20", "Alarm_20", "800");
+			SNAI_cnf_add_option(cnf, "485_DEV_20", "Alarm_Temp", "30.0");
+			SNAI_cnf_add_option(cnf, "485_DEV_20", "Alarm_Humi", "80.0");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_21", "Power_Switch", "0");
 			SNAI_cnf_add_option(cnf, "485_DEV_21", "Period_Time", "900");
 			SNAI_cnf_add_option(cnf, "485_DEV_21", "Over_Timeout", "30");
-			SNAI_cnf_add_option(cnf, "485_DEV_21", "Alarm_21", "800");
+			SNAI_cnf_add_option(cnf, "485_DEV_21", "Alarm_Temp", "30.0");
+			SNAI_cnf_add_option(cnf, "485_DEV_21", "Alarm_Humi", "80.0");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_22", "Power_Switch", "0");
 			SNAI_cnf_add_option(cnf, "485_DEV_22", "Period_Time", "900");
 			SNAI_cnf_add_option(cnf, "485_DEV_22", "Over_Timeout", "30");
-			SNAI_cnf_add_option(cnf, "485_DEV_22", "Alarm_22", "800");
+			SNAI_cnf_add_option(cnf, "485_DEV_22", "Alarm_Temp", "30.0");
+			SNAI_cnf_add_option(cnf, "485_DEV_22", "Alarm_Humi", "80.0");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_23", "Power_Switch", "0");
 			SNAI_cnf_add_option(cnf, "485_DEV_23", "Period_Time", "900");
 			SNAI_cnf_add_option(cnf, "485_DEV_23", "Over_Timeout", "30");
-			SNAI_cnf_add_option(cnf, "485_DEV_23", "Alarm_23", "800");
+			SNAI_cnf_add_option(cnf, "485_DEV_23", "Alarm_Temp", "30.0");
+			SNAI_cnf_add_option(cnf, "485_DEV_23", "Alarm_Humi", "80.0");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_24", "Power_Switch", "0");
 			SNAI_cnf_add_option(cnf, "485_DEV_24", "Period_Time", "900");
 			SNAI_cnf_add_option(cnf, "485_DEV_24", "Over_Timeout", "30");
-			SNAI_cnf_add_option(cnf, "485_DEV_24", "Alarm_24", "800");
+			SNAI_cnf_add_option(cnf, "485_DEV_24", "Alarm_Temp", "30.0");
+			SNAI_cnf_add_option(cnf, "485_DEV_24", "Alarm_Humi", "80.0");
+
 			SNAI_cnf_add_option(cnf, "CONFIG_FLAG", "CONFIG_ENABLE", "0");
+			SNAI_cnf_add_option(cnf, "CONFIG_FLAG", "IBS_LED_Ver","V1.0XXXX");
 			SNAI_cnf_write_file(cnf, "/linkedge/run/SNAI_cnf.ini", "SNAI 485 DEVICE DRIVER CONFIG INFO"); // 将对象写入/linkedge/run/SNAI_cnf.ini文件
 			SNAI_DEBUG_INFO("写入完成！");//调试用
 			//fclose(fp);
@@ -1288,7 +1303,7 @@ void tlv_decode(SNAI_circular_buffer *cb)
 		}
 		else//启用过滤
 		{
-			SNAI_RS485_DATA_Filtration(SNAI_all_device_value[0],&Water_Yield,0);
+			SNAI_RS485_DATA_Filtration(SNAI_all_device_value[0],&Water_Yield,0,SNAI_TYPE_Water_Meter);
 		}
 		if(Water_Yield >= SNAI_Alarm_value.SNAI_485dev_Alarm_DATA_Water)//水量报警判断
 		{
@@ -1419,7 +1434,7 @@ void tlv_decode(SNAI_circular_buffer *cb)
 				}
 				else
 				{
-					SNAI_RS485_DATA_Filtration(SNAI_all_device_value[3],&float_temp,0);//温度检测
+					SNAI_RS485_DATA_Filtration(SNAI_all_device_value[3],&float_temp,0,SNAI_TYPE_out_tmpt);//温度检测
 				}
 				if(float_temp >= SNAI_Alarm_value.SNAI_485dev_Alarm_DATA_TMP[SNAI_all_device_value[3]])//温度报警判断
 				{
@@ -1474,7 +1489,7 @@ void tlv_decode(SNAI_circular_buffer *cb)
 					}
 					else
 					{
-						SNAI_RS485_DATA_Filtration(SNAI_all_device_value[3],&float_Humi_temp,1);//湿度检测
+						SNAI_RS485_DATA_Filtration(SNAI_all_device_value[3],&float_Humi_temp,1,SNAI_TYPE_out_tmpt);//湿度检测
 					
 }
 					if(float_Humi_temp >= SNAI_Alarm_value.SNAI_485dev_Alarm_DATA_Humi[SNAI_all_device_value[3]])//湿度报警判断
@@ -1508,7 +1523,7 @@ void tlv_decode(SNAI_circular_buffer *cb)
 				}
 				else
 				{
-                	SNAI_RS485_DATA_Filtration(SNAI_all_device_value[3],&Current_Co2_value,0);
+                	SNAI_RS485_DATA_Filtration(SNAI_all_device_value[3],&Current_Co2_value,0,SNAI_TYPE_Co2);
 				}
 				if(Current_Co2_value >= SNAI_Alarm_value.SNAI_485dev_Alarm_DATA_INT[SNAI_all_device_value[3]])//气体浓度报警判断
 				{
@@ -1548,7 +1563,7 @@ void tlv_decode(SNAI_circular_buffer *cb)
 				}
 				else
 				{
-                	SNAI_RS485_DATA_Filtration(SNAI_all_device_value[3],&Current_NH3_value,0);
+                	SNAI_RS485_DATA_Filtration(SNAI_all_device_value[3],&Current_NH3_value,0,SNAI_TYPE_NH3);
 				}
 				if(Current_NH3_value >= SNAI_Alarm_value.SNAI_485dev_Alarm_DATA_INT[SNAI_all_device_value[3]])//气体浓度报警判断
 				{
@@ -1587,7 +1602,7 @@ void tlv_decode(SNAI_circular_buffer *cb)
                 	SNAI_ALL_DEVICE_REPORT.SNAI_device_ready[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]] = 1;}
 				else
 				{
-                	SNAI_RS485_DATA_Filtration(SNAI_all_device_value[3],&Current_light_intensity,0);
+                	SNAI_RS485_DATA_Filtration(SNAI_all_device_value[3],&Current_light_intensity,0,SNAI_TYPE_Illumination);
 				}
 				if(Current_light_intensity >= SNAI_Alarm_value.SNAI_485dev_Alarm_DATA_INT[SNAI_all_device_value[3]])//光照度报警判断
 				{
@@ -1612,89 +1627,89 @@ void tlv_decode(SNAI_circular_buffer *cb)
             }
             break;
         case SNAI_TYPE_Position_Left:
-		case SNAI_TYPE_Position_Right:
-			if(SNAI_all_device_value[3] == 11)
-			{
-	            if(SNAI_ALL_DEVICE_REPORT.SNAI_DEVICE_EXIST[SNAI_all_device_value[3]] == 1)
-	            {
-	                Current_Position_L_value = (SNAI_all_device_value[7] & 0x7F)*256;
-	                Current_Position_L_value += (SNAI_all_device_value[8]>>4)*16+
-	                                        (SNAI_all_device_value[8]&0x0F);
-	                dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].type = LEDA_TYPE_INT;
-	                strcpy(dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].key ,"Position_Value");
-	                sprintf(dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].value,"%u",Current_Position_L_value);
-	                SNAI_DEBUG_INFO("获取【%u#】位置LEFT传感器偏移距离【%umm】",SNAI_all_device_value[3],Current_Position_L_value);//11#
-	                if(SNAI_Period_Set.SNAI_Main_Filtration_Flag == 0)
-	                {
-	                	SNAI_ALL_DEVICE_REPORT.SNAI_device_ready[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]] = 1;
-	                }
-					else
-					{
-	                	SNAI_RS485_DATA_Filtration(SNAI_all_device_value[3],&Current_Position_L_value,0);
-					}
-					if(Current_Position_L_value >= SNAI_Alarm_value.SNAI_485dev_Alarm_DATA_INT[SNAI_all_device_value[3]])//位移长度报警判断
-					{
-						SNAI_DEBUG_INFO("设备:【%u】当前值【%umm】临界值【%umm】开启左长位移报警！",SNAI_all_device_value[3],Current_Position_L_value,SNAI_Alarm_value.SNAI_485dev_Alarm_DATA_INT[SNAI_all_device_value[3]]);
-						strcpy(SNAI_DEVICE_EVN_REPOR.SNAI_DEVICE_EVENT_NAME[SNAI_DEVICE_EVN_REPOR.Event_Name_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]+1],"Position_Alarm");
-						dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]+1].type = LEDA_TYPE_ENUM;
-						dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]+2].type = LEDA_TYPE_INT;
-						strcpy(dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]+2].key ,"Position_Value");
-						sprintf(dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]+2].value ,"%s",dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].value);
-						strcpy(dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]+1].key ,"AlarmType");
-			        	strcpy(dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]+1].value ,"1");//0正常/1高量/2低量
-			        	SNAI_DEVICE_EVN_REPOR.SNAI_DEVICE_EVENT_TRIGGER[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]] |= 2;//允许上报事件
-					}
-					else
-					{
-						strcpy(SNAI_DEVICE_EVN_REPOR.SNAI_DEVICE_EVENT_NAME[SNAI_DEVICE_EVN_REPOR.Event_Name_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]],"Faultreport");
-						dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].type = LEDA_TYPE_ENUM;
-						strcpy(dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].key ,"error");
-						strcpy(dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].value ,"0");//0正常1故障
-						SNAI_DEVICE_EVN_REPOR.SNAI_DEVICE_EVENT_TRIGGER[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]] |= 1;
-					}
-	            }
-        	}
-			else
-			{
-	            if(SNAI_ALL_DEVICE_REPORT.SNAI_DEVICE_EXIST[SNAI_all_device_value[3]] == 1)
-	            {
-	                Current_Position_R_value = (SNAI_all_device_value[7] & 0x7F)*256;
-	                Current_Position_R_value += (SNAI_all_device_value[8]>>4)*16+
-	                                        (SNAI_all_device_value[8]&0x0F);
-	                dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].type = LEDA_TYPE_INT;
-	                strcpy(dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].key ,"Position_Value");
-	                sprintf(dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].value,"%u",Current_Position_R_value);
-	                SNAI_DEBUG_INFO("获取【%u#】位置RIGHT传感器偏移距离【%umm】",SNAI_all_device_value[3],Current_Position_R_value);//12#
-	                if(SNAI_Period_Set.SNAI_Main_Filtration_Flag == 0)
-	                {
-	                	SNAI_ALL_DEVICE_REPORT.SNAI_device_ready[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]] = 1;
-	                }
-					else
-					{
-	                	SNAI_RS485_DATA_Filtration(SNAI_all_device_value[3],&Current_Position_R_value,0);
-					}
-					if(Current_Position_R_value >= SNAI_Alarm_value.SNAI_485dev_Alarm_DATA_INT[SNAI_all_device_value[3]])//位移长度报警判断
-					{
-						SNAI_DEBUG_INFO("设备:【%u】当前值【%umm】临界值【%umm】开启右长位移报警！",SNAI_all_device_value[3],Current_Position_R_value,SNAI_Alarm_value.SNAI_485dev_Alarm_DATA_INT[SNAI_all_device_value[3]]);
-						strcpy(SNAI_DEVICE_EVN_REPOR.SNAI_DEVICE_EVENT_NAME[SNAI_DEVICE_EVN_REPOR.Event_Name_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]+1],"Position_Alarm");
-						dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]+1].type = LEDA_TYPE_ENUM;
-						dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]+2].type = LEDA_TYPE_INT;
-						strcpy(dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]+2].key ,"Position_Value");
-						sprintf(dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]+2].value ,"%s",dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].value);
-						strcpy(dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]+1].key ,"AlarmType");
-			        	strcpy(dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]+1].value ,"1");//0正常/1高量/2低量
-			        	SNAI_DEVICE_EVN_REPOR.SNAI_DEVICE_EVENT_TRIGGER[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]] |= 2;//允许上报事件
-					}
-					else
-					{
-						strcpy(SNAI_DEVICE_EVN_REPOR.SNAI_DEVICE_EVENT_NAME[SNAI_DEVICE_EVN_REPOR.Event_Name_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]],"Faultreport");
-						dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].type = LEDA_TYPE_ENUM;
-						strcpy(dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].key ,"error");
-						strcpy(dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].value ,"0");//0正常1故障
-						SNAI_DEVICE_EVN_REPOR.SNAI_DEVICE_EVENT_TRIGGER[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]] |= 1;
-					}
-	            }
-			}
+				case SNAI_TYPE_Position_Right:
+					if(SNAI_all_device_value[3] == 11)
+						{
+            if(SNAI_ALL_DEVICE_REPORT.SNAI_DEVICE_EXIST[SNAI_all_device_value[3]] == 1)
+            {
+                Current_Position_L_value = (SNAI_all_device_value[7] & 0x7F)*256;
+                Current_Position_L_value += (SNAI_all_device_value[8]>>4)*16+
+                                        (SNAI_all_device_value[8]&0x0F);
+                dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].type = LEDA_TYPE_INT;
+                strcpy(dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].key ,"Position_Value");
+                sprintf(dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].value,"%u",Current_Position_L_value);
+                SNAI_DEBUG_INFO("获取【%u#】位置LEFT传感器偏移距离【%umm】",SNAI_all_device_value[3],Current_Position_L_value);//11#
+                if(SNAI_Period_Set.SNAI_Main_Filtration_Flag == 0)
+                {
+                	SNAI_ALL_DEVICE_REPORT.SNAI_device_ready[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]] = 1;
+                }
+				else
+				{
+                	SNAI_RS485_DATA_Filtration(SNAI_all_device_value[3],&Current_Position_L_value,0,SNAI_TYPE_Position_Left);
+				}
+				if(Current_Position_L_value >= SNAI_Alarm_value.SNAI_485dev_Alarm_DATA_INT[SNAI_all_device_value[3]])//位移长度报警判断
+				{
+					SNAI_DEBUG_INFO("设备:【%u】当前值【%umm】临界值【%umm】开启左长位移报警！",SNAI_all_device_value[3],Current_Position_L_value,SNAI_Alarm_value.SNAI_485dev_Alarm_DATA_INT[SNAI_all_device_value[3]]);
+					strcpy(SNAI_DEVICE_EVN_REPOR.SNAI_DEVICE_EVENT_NAME[SNAI_DEVICE_EVN_REPOR.Event_Name_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]+1],"Position_Alarm");
+					dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]+1].type = LEDA_TYPE_ENUM;
+					dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]+2].type = LEDA_TYPE_INT;
+					strcpy(dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]+2].key ,"Position_Value");
+					sprintf(dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]+2].value ,"%s",dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].value);
+					strcpy(dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]+1].key ,"AlarmType");
+		        	strcpy(dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]+1].value ,"1");//0正常/1高量/2低量
+		        	SNAI_DEVICE_EVN_REPOR.SNAI_DEVICE_EVENT_TRIGGER[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]] |= 2;//允许上报事件
+				}
+				else
+				{
+					strcpy(SNAI_DEVICE_EVN_REPOR.SNAI_DEVICE_EVENT_NAME[SNAI_DEVICE_EVN_REPOR.Event_Name_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]],"Faultreport");
+					dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].type = LEDA_TYPE_ENUM;
+					strcpy(dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].key ,"error");
+					strcpy(dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].value ,"0");//0正常1故障
+					SNAI_DEVICE_EVN_REPOR.SNAI_DEVICE_EVENT_TRIGGER[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]] |= 1;
+				}
+            }
+        }
+        else
+				{
+            if(SNAI_ALL_DEVICE_REPORT.SNAI_DEVICE_EXIST[SNAI_all_device_value[3]] == 1)
+            {
+                Current_Position_R_value = (SNAI_all_device_value[7] & 0x7F)*256;
+                Current_Position_R_value += (SNAI_all_device_value[8]>>4)*16+
+                                        (SNAI_all_device_value[8]&0x0F);
+                dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].type = LEDA_TYPE_INT;
+                strcpy(dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].key ,"Position_Value");
+                sprintf(dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].value,"%u",Current_Position_R_value);
+                SNAI_DEBUG_INFO("获取【%u#】位置RIGHT传感器偏移距离【%umm】",SNAI_all_device_value[3],Current_Position_R_value);//12#
+                if(SNAI_Period_Set.SNAI_Main_Filtration_Flag == 0)
+                {
+                	SNAI_ALL_DEVICE_REPORT.SNAI_device_ready[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]] = 1;
+                }
+				else
+				{
+                	SNAI_RS485_DATA_Filtration(SNAI_all_device_value[3],&Current_Position_R_value,0,SNAI_TYPE_Position_Right);
+				}
+				if(Current_Position_R_value >= SNAI_Alarm_value.SNAI_485dev_Alarm_DATA_INT[SNAI_all_device_value[3]])//位移长度报警判断
+				{
+					SNAI_DEBUG_INFO("设备:【%u】当前值【%umm】临界值【%umm】开启右长位移报警！",SNAI_all_device_value[3],Current_Position_R_value,SNAI_Alarm_value.SNAI_485dev_Alarm_DATA_INT[SNAI_all_device_value[3]]);
+					strcpy(SNAI_DEVICE_EVN_REPOR.SNAI_DEVICE_EVENT_NAME[SNAI_DEVICE_EVN_REPOR.Event_Name_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]+1],"Position_Alarm");
+					dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]+1].type = LEDA_TYPE_ENUM;
+					dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]+2].type = LEDA_TYPE_INT;
+					strcpy(dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]+2].key ,"Position_Value");
+					sprintf(dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]+2].value ,"%s",dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].value);
+					strcpy(dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]+1].key ,"AlarmType");
+		        	strcpy(dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]+1].value ,"1");//0正常/1高量/2低量
+		        	SNAI_DEVICE_EVN_REPOR.SNAI_DEVICE_EVENT_TRIGGER[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]] |= 2;//允许上报事件
+				}
+				else
+				{
+					strcpy(SNAI_DEVICE_EVN_REPOR.SNAI_DEVICE_EVENT_NAME[SNAI_DEVICE_EVN_REPOR.Event_Name_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]],"Faultreport");
+					dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].type = LEDA_TYPE_ENUM;
+					strcpy(dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].key ,"error");
+					strcpy(dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].value ,"0");//0正常1故障
+					SNAI_DEVICE_EVN_REPOR.SNAI_DEVICE_EVENT_TRIGGER[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]] |= 1;
+				}
+            }
+				}
             break;
         case SNAI_TYPE_Co:
             if(SNAI_ALL_DEVICE_REPORT.SNAI_DEVICE_EXIST[SNAI_all_device_value[3]] == 1)
@@ -1712,7 +1727,7 @@ void tlv_decode(SNAI_circular_buffer *cb)
 				}
 				else
 				{
-                	SNAI_RS485_DATA_Filtration(SNAI_all_device_value[3],&Current_Co_value,0);
+                	SNAI_RS485_DATA_Filtration(SNAI_all_device_value[3],&Current_Co_value,0,SNAI_TYPE_Co);
 
                 }
 				if(Current_Co_value >= SNAI_Alarm_value.SNAI_485dev_Alarm_DATA_INT[SNAI_all_device_value[3]])//气体浓度报警判断
@@ -1758,7 +1773,7 @@ void tlv_decode(SNAI_circular_buffer *cb)
                 }
 				else
 				{
-                	SNAI_RS485_DATA_Filtration(SNAI_all_device_value[3],&Current_Negative_Pressure_value,0);
+                	SNAI_RS485_DATA_Filtration(SNAI_all_device_value[3],&Current_Negative_Pressure_value,0,SNAI_TYPE_Negative_Pressure);
 				}
 				if(Current_Negative_Pressure_value >= SNAI_Alarm_value.SNAI_485dev_Alarm_DATA_INT[SNAI_all_device_value[3]])//负压报警判断
 				{
@@ -1797,7 +1812,7 @@ void tlv_decode(SNAI_circular_buffer *cb)
 * @Par 485地址 / 数据 / 第几类型值温度【0】or湿度【1】
 *
 */
-bool SNAI_RS485_DATA_Filtration(unsigned char RS485_ADDR,void *data,unsigned char Parameter_n)
+bool SNAI_RS485_DATA_Filtration(unsigned char RS485_ADDR,void *data,unsigned char Parameter_n,unsigned char type)
 {
     struct tm  *DATA_Filtration_tp;
     time_t DATA_Filtration_t = time(NULL);
@@ -1806,15 +1821,15 @@ bool SNAI_RS485_DATA_Filtration(unsigned char RS485_ADDR,void *data,unsigned cha
     double Accumulate_value = 0.0;
     float float_tmp = 0.0;
     unsigned short other_data = 0;
-		if(RS485_ADDR == 2 || RS485_ADDR == 3 || RS485_ADDR == 4 || RS485_ADDR == 5 || RS485_ADDR == 6)
+		if(type == SNAI_TYPE_Boiler || type == SNAI_TYPE_tmpt || type == SNAI_TYPE_out_tmpt )//按类型匹配
 		{
             float_tmp = *((float *)data);
 		}
-		else if(RS485_ADDR == 17)
+		else if(type == SNAI_TYPE_Water_Meter)
 		{
 			Accumulate_value = *((double *)data);
 		}
-		else if(RS485_ADDR == 7 || RS485_ADDR == 8 || RS485_ADDR == 9 || RS485_ADDR == 10 || RS485_ADDR == 11 || RS485_ADDR == 12)
+		else if(type == SNAI_TYPE_Co2 || type == SNAI_TYPE_NH3 || type == SNAI_TYPE_Illumination || type == SNAI_TYPE_Position_Left || type == SNAI_TYPE_Position_Right || type == SNAI_TYPE_Co || type == SNAI_TYPE_Negative_Pressure || type == SNAI_TYPE_Wind_Direction || type == SNAI_TYPE_Wind_Speed || type == SNAI_TYPE_Other)
 		{
 			other_data = *((unsigned short *)data);
 		}
@@ -1826,13 +1841,11 @@ bool SNAI_RS485_DATA_Filtration(unsigned char RS485_ADDR,void *data,unsigned cha
 		
 		if(Parameter_n == 0)
 		{
-			switch(RS485_ADDR)
+			switch(type)
 			{
-				case 0x02:
-				case 0x03:
-				case 0x04:
-				case 0x05:
-				case 0x06:		
+				case SNAI_TYPE_Boiler:
+				case SNAI_TYPE_tmpt:
+				case SNAI_TYPE_out_tmpt:	
 	    			if(SNAI_ALL_DEVICE_OLD_DATA.SNAI_485dev_OLD_DATA_TMP[RS485_ADDR] == float_tmp && 																					  SNAI_ALL_DEVICE_REPORT.SNAI_485dev_Data_Filtration_Flag[RS485_ADDR] != 0)//当前值等于上次值，且第二次进入！则不上报数据！否则当前值写入旧数据，作为下次判断依据。
 					{
 						SNAI_DEBUG_INFO("温度重复，超时检测中...");
@@ -1849,12 +1862,16 @@ bool SNAI_RS485_DATA_Filtration(unsigned char RS485_ADDR,void *data,unsigned cha
 					}
 					SNAI_ALL_DEVICE_REPORT.SNAI_485dev_Data_Filtration_Flag[RS485_ADDR] = 1;
 					break;
-                case 0x07:
-                case 0x08:
-                case 0x09:
-                case 0x0A:
-                case 0x0B:
-                case 0x0C:
+                case SNAI_TYPE_Negative_Pressure:
+                case SNAI_TYPE_Co2:
+                case SNAI_TYPE_NH3:
+                case SNAI_TYPE_Illumination:
+                case SNAI_TYPE_Position_Left:
+                case SNAI_TYPE_Position_Right:
+								case SNAI_TYPE_Co:
+								case SNAI_TYPE_Wind_Direction:
+								case SNAI_TYPE_Wind_Speed:
+								case SNAI_TYPE_Other:
                         if(SNAI_ALL_DEVICE_OLD_DATA.SNAI_485dev_OLD_DATA_INT[RS485_ADDR] == other_data && 																					  SNAI_ALL_DEVICE_REPORT.SNAI_485dev_Data_Filtration_Flag[RS485_ADDR] != 0)//当前值等于上次值，且第二次进入！则不上报数据！否则当前值写入旧数据，作为下次判断依据。
                         {
 							SNAI_DEBUG_INFO("地址【%u】数据重复，超时检测中...",RS485_ADDR);
@@ -1871,7 +1888,7 @@ bool SNAI_RS485_DATA_Filtration(unsigned char RS485_ADDR,void *data,unsigned cha
                         }
                         SNAI_ALL_DEVICE_REPORT.SNAI_485dev_Data_Filtration_Flag[RS485_ADDR] = 1;
                     break;
-                case 0x11:
+                case SNAI_TYPE_Water_Meter:
                         if(SNAI_ALL_DEVICE_OLD_DATA.SNAI_485dev_OLD_DATA_Flow_Rate_17 == Accumulate_value && 																					  SNAI_ALL_DEVICE_REPORT.SNAI_485dev_Data_Filtration_Flag[RS485_ADDR] != 0)//当前值等于上次值，且第二次进入！则不上报数据！否则当前值写入旧数据，作为下次判断依据。
                         {
 							SNAI_DEBUG_INFO("水表流量数据重复，超时检测中...");
@@ -1893,12 +1910,10 @@ bool SNAI_RS485_DATA_Filtration(unsigned char RS485_ADDR,void *data,unsigned cha
 		}
         else//第二个湿度参数或者流速参数的时候
         {
-            switch(RS485_ADDR)
+            switch(type)
             {
-                case 0x02:
-                case 0x03:
-                case 0x04:
-                case 0x05:
+                case SNAI_TYPE_tmpt:
+                case SNAI_TYPE_out_tmpt:
                     if(SNAI_ALL_DEVICE_OLD_DATA.SNAI_485dev_OLD_DATA_Humi[RS485_ADDR] == float_tmp)//当前值等于上次值，则不上报数据！否则当前值写入旧数据，作为下次判断依据。
                     {
                         //温度的超时检测结果
@@ -2087,7 +2102,7 @@ void* TX_READ(void* data)
     unsigned short SNAI_TX_CRC_value = 0;
     unsigned char SNAI_TX_CRC_value_L = 0;
     unsigned char SNAI_TX_CRC_value_H = 0;
-    unsigned char SNAI_485_ADDR = 0x01;//start_origin
+    unsigned char SNAI_485_ADDR = 0x01;//start_origin 0x02
     while(1)
     {
 			//SNAI_DEBUG_INFO("TX_is Aliver！status【%d】",SNAI_Gateway_Power_Switch_Flag);调试用
@@ -2109,7 +2124,7 @@ void* TX_READ(void* data)
 											if(SNAI_ALL_DEVICE_REPORT.SNAI_DEVICE_EXIST[dev_addr_c] == 1)
 												current_device_cunt++;
 									}
-									//current_device_cunt -= 1;//去掉虚拟网关设备,若从1开始轮询则无需-1
+									current_device_cunt -= 1;//去掉虚拟网关设备--》需轮寻0号地址且设备存在不可-1 直接从1号地址开始则-1
 									if(current_device_cunt < 1)current_device_cunt = 1;//最小保证
 							}
 							else
@@ -2125,7 +2140,7 @@ void* TX_READ(void* data)
 					{
 						pthread_mutex_lock(&SNAI_GET_Properties_mutex_lock);
 						SNAI_Period_Set.SNAI_polling_cycle[SNAI_485_ADDR] = 1;
-		                SNAI_DEBUG_INFO("串口发送%u次",times);//调试用
+		                //SNAI_DEBUG_INFO("串口发送%u次",times);//调试用
 		                times ++;
 		                times = (times >= 30000?1:times);
 		                SNAI_DEVICE_ReadBUFF[3] = SNAI_485_ADDR;
@@ -2531,7 +2546,7 @@ static int get_and_parse_deviceconfig(const char* module_name)
 
     return LE_SUCCESS;
 }
-/*Preset 每个设备线程号&数据存储首地址*/
+/*Preset 每个设备线程号&数据存储首地址,支持24个设备*/
 void SNAI_DEVICE_RS485_ADDR_HANDLE(device_handle_t SNAI_handle,char *RS485_ADDR)
 {
     const char *dat[]={
@@ -2602,7 +2617,7 @@ void SNAI_DEVICE_RS485_ADDR_HANDLE(device_handle_t SNAI_handle,char *RS485_ADDR)
             SNAI_DEVICE_EVN_REPOR.Event_Name_ptr[SNAI_handle] = DEVICE_EVN_NAE_Ptr;//事件名存放地址
 						SNAI_ALL_DEVICE_REPORT.SNAI_485dev_ADDR[SNAI_handle] = i;//数组线程号下标对应设备485地址
 						SNAI_ALL_DEVICE_REPORT.SNAI_device_ready[SNAI_handle] = 0;//初始化为0，未准备好数据
-            if(i == 2 || i == 3 || i == 4 || i == 5  || i == 17)
+            if(i == 2 || i == 3 || i == 4 || i <= 5  || i >= 20 || i == 17)//17 20 21 22 23 24 及5以下定义具备两个参数
             {
                 SNAI_ALL_DEVICE_REPORT.Parameter_count[SNAI_handle] = 2;//参数个数
                 DEVICE_PAR_Ptr += 2;//下次存放地址offset
@@ -2612,7 +2627,7 @@ void SNAI_DEVICE_RS485_ADDR_HANDLE(device_handle_t SNAI_handle,char *RS485_ADDR)
                 SNAI_ALL_DEVICE_REPORT.Parameter_count[SNAI_handle] = 1;//参数个数
                 DEVICE_PAR_Ptr += 1;//下次存放地址offset
             }
-			if(i == 2 || i == 3 || i == 4 || i == 5  )
+			if(i == 2 || i == 3 || i == 4 || i <= 5 || i >= 20)//20 21 22 23 24 及5以下定义具备5个事件参数
 			{
 				
 				SNAI_DEVICE_EVN_REPOR.Event_Parameter_count[SNAI_handle] = 5;//参数个数
@@ -2683,6 +2698,30 @@ int main(int argc, char** argv)
 	if (NULL == cnf) {
 	  return -1; /* 创建对象失败 */
 	}
+	const char* config_led_ver = "V1.0_20190726";
+	SNAI_cnf_get_value(cnf, "CONFIG_FLAG", "CONFIG_ENABLE");
+	CONFIG_ENABLE = cnf->re_int;
+	SNAI_DEBUG_INFO("MAIN读取CONFIG_ENBALE【%d】！",cnf->re_int);
+	if(CONFIG_ENABLE == 0)
+	{
+		SNAI_DEBUG_INFO("<初始配置文件>，添加版本号【%s】！",config_led_ver);
+		SNAI_cnf_add_option(cnf, "CONFIG_FLAG", "IBS_LED_Ver",config_led_ver);
+	}
+	else
+	{
+		SNAI_cnf_get_value(cnf, "CONFIG_FLAG", "IBS_LED_Ver");
+		if(strcmp(config_led_ver,cnf->re_string))
+		{
+			SNAI_DEBUG_INFO("<获得新驱动>，更改版本号【%s】>>>【%s】重置设备开关！",cnf->re_string,config_led_ver);
+			SNAI_cnf_add_option(cnf, "CONFIG_FLAG", "CONFIG_ENABLE", "0");
+			SNAI_cnf_add_option(cnf, "CONFIG_FLAG", "IBS_LED_Ver",config_led_ver);
+			SNAI_cnf_add_option(cnf, "485_Gateway", "Power_Switch", "1");
+			SNAI_cnf_add_option(cnf, "485_Gateway", "Main_Switch_Filtration", "1");
+			SNAI_cnf_add_option(cnf, "485_Gateway", "Period_Time", "1");
+			SNAI_cnf_add_option(cnf, "485_Gateway", "Over_Timeout", "30");	
+		}
+	}
+	SNAI_cnf_write_file(cnf, "/linkedge/run/SNAI_cnf.ini", "SNAI 485 DEVICE DRIVER CONFIG INFO"); // 将对象写入/linkedge/run/SNAI_cnf.ini文件
 	SNAI_cnf_get_value(cnf, "485_Gateway", "Power_Switch");
 	SNAI_Gateway_Power_Switch_Flag = cnf->re_int;
 	SNAI_DEBUG_INFO("初始化读取配置【485_Gateway】设备开关【%d】！", cnf->re_int);//调试用
@@ -2714,7 +2753,7 @@ int main(int argc, char** argv)
 			SNAI_Period_Set.SNAI_485dev_Polling_Period[i] = cnf->re_int;
 			SNAI_cnf_get_value(cnf, config_dev_n, "Over_Timeout");
 			SNAI_Period_Set.SNAI_485dev_Filtration_Timeout_Period[i] = cnf->re_int;
-			if((i == 2) | (i == 3) | (i == 4) | (i == 5))
+			if(i == 2 || i == 3 || i == 4 || i <= 5 || i >= 20)
 			{
 				SNAI_cnf_get_value(cnf, config_dev_n, "Alarm_Temp");
 				SNAI_Alarm_value.SNAI_485dev_Alarm_DATA_TMP[i] = cnf->re_double;
