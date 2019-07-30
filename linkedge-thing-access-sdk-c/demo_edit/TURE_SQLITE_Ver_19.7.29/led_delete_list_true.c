@@ -612,7 +612,7 @@ void process_query_result(char** pr, int row, int column)
 			p_tm = localtime(&timestamp);
 			sprintf(datavalue, "%02d%02d%02d", p_tm->tm_year + 1900,
 					p_tm->tm_mon + 1, p_tm->tm_mday);
-			SNAI_DEBUG_INFO("The offline time:%02d:%02d:%02d\n\n", p_tm->tm_hour,
+			SNAI_DEBUG_INFO("The device【%d】offline time:%02d:%02d:%02d",addr, p_tm->tm_hour,
 					p_tm->tm_min, p_tm->tm_sec);
 			record_update_state(addr, 0);
 		}
@@ -779,137 +779,137 @@ SNAI_Config *SNAI_cnf_read_config(const char *filename, char comment, char separ
 			SNAI_cnf_add_option(cnf, "485_Gateway", "Over_Timeout", "30");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_0", "Power_Switch", "0");
-			SNAI_cnf_add_option(cnf, "485_DEV_0", "Period_Time", "900");
+			SNAI_cnf_add_option(cnf, "485_DEV_0", "Period_Time", "1000");
 			SNAI_cnf_add_option(cnf, "485_DEV_0", "Over_Timeout", "30");
 			SNAI_cnf_add_option(cnf, "485_DEV_0", "Alarm_Temp", "20.0");
 			SNAI_cnf_add_option(cnf, "485_DEV_0", "Alarm_Humi", "80.0");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_1", "Power_Switch", "0");
-			SNAI_cnf_add_option(cnf, "485_DEV_1", "Period_Time", "900");
+			SNAI_cnf_add_option(cnf, "485_DEV_1", "Period_Time", "1000");
 			SNAI_cnf_add_option(cnf, "485_DEV_1", "Over_Timeout", "30");
 			SNAI_cnf_add_option(cnf, "485_DEV_1", "Alarm_Temp", "20.0");
 			SNAI_cnf_add_option(cnf, "485_DEV_1", "Alarm_Humi", "80.0");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_2", "Power_Switch", "0");
-			SNAI_cnf_add_option(cnf, "485_DEV_2", "Period_Time", "900");
+			SNAI_cnf_add_option(cnf, "485_DEV_2", "Period_Time", "1000");
 			SNAI_cnf_add_option(cnf, "485_DEV_2", "Over_Timeout", "30");
 			SNAI_cnf_add_option(cnf, "485_DEV_2", "Alarm_Temp", "20.0");
 			SNAI_cnf_add_option(cnf, "485_DEV_2", "Alarm_Humi", "80.0");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_3", "Power_Switch", "0");
-			SNAI_cnf_add_option(cnf, "485_DEV_3", "Period_Time", "900");
+			SNAI_cnf_add_option(cnf, "485_DEV_3", "Period_Time", "1000");
 			SNAI_cnf_add_option(cnf, "485_DEV_3", "Over_Timeout", "30");
 			SNAI_cnf_add_option(cnf, "485_DEV_3", "Alarm_Temp", "30.0");
 			SNAI_cnf_add_option(cnf, "485_DEV_3", "Alarm_Humi", "80.0");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_4", "Power_Switch", "0");
-			SNAI_cnf_add_option(cnf, "485_DEV_4", "Period_Time", "900");
+			SNAI_cnf_add_option(cnf, "485_DEV_4", "Period_Time", "1000");
 			SNAI_cnf_add_option(cnf, "485_DEV_4", "Over_Timeout", "30");
 			SNAI_cnf_add_option(cnf, "485_DEV_4", "Alarm_Temp", "40.0");
 			SNAI_cnf_add_option(cnf, "485_DEV_4", "Alarm_Humi", "80.0");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_5", "Power_Switch", "0");
-			SNAI_cnf_add_option(cnf, "485_DEV_5", "Period_Time", "900");
+			SNAI_cnf_add_option(cnf, "485_DEV_5", "Period_Time", "1000");
 			SNAI_cnf_add_option(cnf, "485_DEV_5", "Over_Timeout", "30");
 			SNAI_cnf_add_option(cnf, "485_DEV_5", "Alarm_Temp", "50.0");
 			SNAI_cnf_add_option(cnf, "485_DEV_5", "Alarm_Humi", "80.0");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_6", "Power_Switch", "0");
-			SNAI_cnf_add_option(cnf, "485_DEV_6", "Period_Time", "900");
+			SNAI_cnf_add_option(cnf, "485_DEV_6", "Period_Time", "1000");
 			SNAI_cnf_add_option(cnf, "485_DEV_6", "Over_Timeout", "30");
 			SNAI_cnf_add_option(cnf, "485_DEV_6", "Alarm_Boiler", "60.0");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_7", "Power_Switch", "0");
-			SNAI_cnf_add_option(cnf, "485_DEV_7", "Period_Time", "900");
+			SNAI_cnf_add_option(cnf, "485_DEV_7", "Period_Time", "1000");
 			SNAI_cnf_add_option(cnf, "485_DEV_7", "Over_Timeout", "30");
 			SNAI_cnf_add_option(cnf, "485_DEV_7", "Alarm_Negative_pressure", "5");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_8", "Power_Switch", "0");
-			SNAI_cnf_add_option(cnf, "485_DEV_8", "Period_Time", "900");
+			SNAI_cnf_add_option(cnf, "485_DEV_8", "Period_Time", "1000");
 			SNAI_cnf_add_option(cnf, "485_DEV_8", "Over_Timeout", "30");
 			SNAI_cnf_add_option(cnf, "485_DEV_8", "Alarm_Co2", "800");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_9", "Power_Switch", "0");
-			SNAI_cnf_add_option(cnf, "485_DEV_9", "Period_Time", "900");
+			SNAI_cnf_add_option(cnf, "485_DEV_9", "Period_Time", "1000");
 			SNAI_cnf_add_option(cnf, "485_DEV_9", "Over_Timeout", "30");
 			SNAI_cnf_add_option(cnf, "485_DEV_9", "Alarm_NH3", "800");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_10", "Power_Switch", "0");
-			SNAI_cnf_add_option(cnf, "485_DEV_10", "Period_Time", "900");
+			SNAI_cnf_add_option(cnf, "485_DEV_10", "Period_Time", "1000");
 			SNAI_cnf_add_option(cnf, "485_DEV_10", "Over_Timeout", "30");
 			SNAI_cnf_add_option(cnf, "485_DEV_10", "Alarm_iLLumination", "200");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_11", "Power_Switch", "0");
-			SNAI_cnf_add_option(cnf, "485_DEV_11", "Period_Time", "900");
+			SNAI_cnf_add_option(cnf, "485_DEV_11", "Period_Time", "1000");
 			SNAI_cnf_add_option(cnf, "485_DEV_11", "Over_Timeout", "30");
 			SNAI_cnf_add_option(cnf, "485_DEV_11", "Alarm_Position_Value_L", "600");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_12", "Power_Switch", "0");
-			SNAI_cnf_add_option(cnf, "485_DEV_12", "Period_Time", "900");
+			SNAI_cnf_add_option(cnf, "485_DEV_12", "Period_Time", "1000");
 			SNAI_cnf_add_option(cnf, "485_DEV_12", "Over_Timeout", "30");
 			SNAI_cnf_add_option(cnf, "485_DEV_12", "Alarm_Position_Value_R", "600");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_13", "Power_Switch", "0");
-			SNAI_cnf_add_option(cnf, "485_DEV_13", "Period_Time", "900");
+			SNAI_cnf_add_option(cnf, "485_DEV_13", "Period_Time", "1000");
 			SNAI_cnf_add_option(cnf, "485_DEV_13", "Over_Timeout", "30");
 			SNAI_cnf_add_option(cnf, "485_DEV_13", "Alarm_Co", "800");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_14", "Power_Switch", "0");
-			SNAI_cnf_add_option(cnf, "485_DEV_14", "Period_Time", "900");
+			SNAI_cnf_add_option(cnf, "485_DEV_14", "Period_Time", "1000");
 			SNAI_cnf_add_option(cnf, "485_DEV_14", "Over_Timeout", "30");
 			SNAI_cnf_add_option(cnf, "485_DEV_14", "Alarm_14", "800");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_15", "Power_Switch", "0");
-			SNAI_cnf_add_option(cnf, "485_DEV_15", "Period_Time", "900");
+			SNAI_cnf_add_option(cnf, "485_DEV_15", "Period_Time", "1000");
 			SNAI_cnf_add_option(cnf, "485_DEV_15", "Over_Timeout", "30");
 			SNAI_cnf_add_option(cnf, "485_DEV_15", "Alarm_15", "800");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_16", "Power_Switch", "0");
-			SNAI_cnf_add_option(cnf, "485_DEV_16", "Period_Time", "900");
+			SNAI_cnf_add_option(cnf, "485_DEV_16", "Period_Time", "1000");
 			SNAI_cnf_add_option(cnf, "485_DEV_16", "Over_Timeout", "30");
 			SNAI_cnf_add_option(cnf, "485_DEV_16", "Alarm_16", "800");
 			
 			SNAI_cnf_add_option(cnf, "485_DEV_17", "Power_Switch", "0");
-			SNAI_cnf_add_option(cnf, "485_DEV_17", "Period_Time", "900");
+			SNAI_cnf_add_option(cnf, "485_DEV_17", "Period_Time", "1000");
 			SNAI_cnf_add_option(cnf, "485_DEV_17", "Over_Timeout", "30");
 			SNAI_cnf_add_option(cnf, "485_DEV_17", "Alarm_Water", "99.9");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_18", "Power_Switch", "0");
-			SNAI_cnf_add_option(cnf, "485_DEV_18", "Period_Time", "900");
+			SNAI_cnf_add_option(cnf, "485_DEV_18", "Period_Time", "1000");
 			SNAI_cnf_add_option(cnf, "485_DEV_18", "Over_Timeout", "30");
 			SNAI_cnf_add_option(cnf, "485_DEV_18", "Alarm_18", "800");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_19", "Power_Switch", "0");
-			SNAI_cnf_add_option(cnf, "485_DEV_19", "Period_Time", "900");
+			SNAI_cnf_add_option(cnf, "485_DEV_19", "Period_Time", "1000");
 			SNAI_cnf_add_option(cnf, "485_DEV_19", "Over_Timeout", "30");
 			SNAI_cnf_add_option(cnf, "485_DEV_19", "Alarm_19", "800");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_20", "Power_Switch", "0");
-			SNAI_cnf_add_option(cnf, "485_DEV_20", "Period_Time", "900");
+			SNAI_cnf_add_option(cnf, "485_DEV_20", "Period_Time", "1000");
 			SNAI_cnf_add_option(cnf, "485_DEV_20", "Over_Timeout", "30");
 			SNAI_cnf_add_option(cnf, "485_DEV_20", "Alarm_Temp", "30.0");
 			SNAI_cnf_add_option(cnf, "485_DEV_20", "Alarm_Humi", "80.0");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_21", "Power_Switch", "0");
-			SNAI_cnf_add_option(cnf, "485_DEV_21", "Period_Time", "900");
+			SNAI_cnf_add_option(cnf, "485_DEV_21", "Period_Time", "1000");
 			SNAI_cnf_add_option(cnf, "485_DEV_21", "Over_Timeout", "30");
 			SNAI_cnf_add_option(cnf, "485_DEV_21", "Alarm_Temp", "30.0");
 			SNAI_cnf_add_option(cnf, "485_DEV_21", "Alarm_Humi", "80.0");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_22", "Power_Switch", "0");
-			SNAI_cnf_add_option(cnf, "485_DEV_22", "Period_Time", "900");
+			SNAI_cnf_add_option(cnf, "485_DEV_22", "Period_Time", "1000");
 			SNAI_cnf_add_option(cnf, "485_DEV_22", "Over_Timeout", "30");
 			SNAI_cnf_add_option(cnf, "485_DEV_22", "Alarm_Temp", "30.0");
 			SNAI_cnf_add_option(cnf, "485_DEV_22", "Alarm_Humi", "80.0");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_23", "Power_Switch", "0");
-			SNAI_cnf_add_option(cnf, "485_DEV_23", "Period_Time", "900");
+			SNAI_cnf_add_option(cnf, "485_DEV_23", "Period_Time", "1000");
 			SNAI_cnf_add_option(cnf, "485_DEV_23", "Over_Timeout", "30");
 			SNAI_cnf_add_option(cnf, "485_DEV_23", "Alarm_Temp", "30.0");
 			SNAI_cnf_add_option(cnf, "485_DEV_23", "Alarm_Humi", "80.0");
 
 			SNAI_cnf_add_option(cnf, "485_DEV_24", "Power_Switch", "0");
-			SNAI_cnf_add_option(cnf, "485_DEV_24", "Period_Time", "900");
+			SNAI_cnf_add_option(cnf, "485_DEV_24", "Period_Time", "1000");
 			SNAI_cnf_add_option(cnf, "485_DEV_24", "Over_Timeout", "30");
 			SNAI_cnf_add_option(cnf, "485_DEV_24", "Alarm_Temp", "30.0");
 			SNAI_cnf_add_option(cnf, "485_DEV_24", "Alarm_Humi", "80.0");
@@ -1687,7 +1687,7 @@ void tlv_decode(SNAI_circular_buffer *cb)
 	                        strcpy(dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].key ,"CurrentTemperature");
 	                        sprintf(dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].value,"%.1f",float_temp);
 	                        //gcvt(float_temp, 3, dev_proper_data[0].value);
-	                        SNAI_DEBUG_INFO("获取%u#水温数负值【%.1f℃】",SNAI_all_device_value[3],float_temp);
+	                        //SNAI_DEBUG_INFO("获取%u#水温数负值【%.1f℃】",SNAI_all_device_value[3],float_temp);//调试用
 	                        
                     	}
                     	break;
@@ -1707,7 +1707,7 @@ void tlv_decode(SNAI_circular_buffer *cb)
                             dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].type = LEDA_TYPE_DOUBLE;
                             strcpy(dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].key ,"CurrentTemperature");
                             sprintf(dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].value,"%.1f",float_temp);
-                            SNAI_DEBUG_INFO("获取室外%u#温度负值【%.1f℃】",SNAI_all_device_value[3],float_temp);
+                            //SNAI_DEBUG_INFO("获取室外%u#温度负值【%.1f℃】",SNAI_all_device_value[3],float_temp);//调试用
                             
                         }
                         break;
@@ -1726,7 +1726,7 @@ void tlv_decode(SNAI_circular_buffer *cb)
 	                        strcpy(dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].key ,"CurrentTemperature");
 	                        sprintf(dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].value,"%.1f",float_temp);
 	                        //gcvt(float_temp, 3, dev_proper_data[0].value);
-	                        SNAI_DEBUG_INFO("获取%u#水温数正值【%.1f℃】",SNAI_all_device_value[3],float_temp);
+	                        //SNAI_DEBUG_INFO("获取%u#水温数正值【%.1f℃】",SNAI_all_device_value[3],float_temp);//调试用
 	                        
                     	}
 						break;
@@ -1736,7 +1736,7 @@ void tlv_decode(SNAI_circular_buffer *cb)
 							dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].type = LEDA_TYPE_DOUBLE;//LEDA_TYPE_TEXT;//LEDA_TYPE_FLOAT;//浮点
 							strcpy(dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].key ,"CurrentTemperature");
 							sprintf(dev_proper_data[SNAI_ALL_DEVICE_REPORT.Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[SNAI_all_device_value[3]]]].value,"%.1f",float_temp);
-							SNAI_DEBUG_INFO("获取%u#温度正值【%.1f℃】",SNAI_all_device_value[3],float_temp);								
+							//SNAI_DEBUG_INFO("获取%u#温度正值【%.1f℃】",SNAI_all_device_value[3],float_temp);//调试用								
 							
 						}
 						break;
@@ -3000,7 +3000,7 @@ int main(int argc, char** argv)
 	if (NULL == cnf) {
 	  return -1; /* 创建对象失败 */
 	}
-	const char* config_led_ver = "V1.0_20190731";
+	const char* config_led_ver = "V1.0_20190801";
 	SNAI_DEBUG_INFO("MAIN读取当前版本【%s】！",config_led_ver);
 	SNAI_cnf_get_value(cnf, "CONFIG_FLAG", "CONFIG_ENABLE");
 	CONFIG_ENABLE = cnf->re_int;
