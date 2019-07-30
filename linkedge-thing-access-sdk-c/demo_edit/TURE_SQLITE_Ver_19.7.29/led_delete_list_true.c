@@ -605,7 +605,7 @@ void process_query_result(char** pr, int row, int column)
 			strcpy(dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[addr]]].key ,"error");
 			strcpy(dev_event_data[SNAI_DEVICE_EVN_REPOR.Event_Parameter_ptr[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[addr]]].value ,"0");//0离线1故障
 			SNAI_DEVICE_EVN_REPOR.SNAI_DEVICE_EVENT_TRIGGER[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[addr]] |= 1;
-			SNAI_ALL_DEVICE_REPORT.SNAI_device_ready[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[addr]] == 1;//强制启动上报故障
+			SNAI_ALL_DEVICE_REPORT.SNAI_device_ready[SNAI_ALL_DEVICE_REPORT.SNAI_485dev_handle[addr]] = 1;//强制启动上报故障
 			struct tm *p_tm;
 			time_t timestamp;
 			timestamp = time((time_t *) NULL);
