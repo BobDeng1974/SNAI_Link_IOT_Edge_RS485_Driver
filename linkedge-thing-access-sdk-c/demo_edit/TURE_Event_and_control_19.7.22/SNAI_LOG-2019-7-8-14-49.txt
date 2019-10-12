@@ -3,6 +3,10 @@
 {
     "Power_Switch":0
 }
+/*manul*/ 16个元素
+{
+    "Manul":[11 12 13 14 15 16 17 18 19]
+}
 /*启用过滤*/ OK
 {
 "Main_Switch_Filtration":0

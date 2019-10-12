@@ -1265,7 +1265,7 @@ SNAI_circular_buffer *cb_create(unsigned long order)
 		abort();
 	}*/
 
-	status = ftruncate(fd, cb->count);
+	status = ftruncate(fd, cb->count);//指定的文件大小改为参数length 指定的大小
 	if (0 != status)
 	{
 		SNAI_DEBUG_INFO("ftruncate failed");
