@@ -420,6 +420,7 @@ int filedb_create(void)
 	if(SQLITE_OK != rc)
 	{
 		fprintf(stderr, "can't create file database :%s\n", errMsg);
+		sqlite3_free(errMsg);
 		sqlite3_close(db);
 		return -1;
 	}
@@ -429,6 +430,7 @@ int filedb_create(void)
 	if(SQLITE_OK != rc)
 	{
 		fprintf(stderr, "can't empty file database :%s\n", errMsg);
+		sqlite3_free(errMsg);
 		sqlite3_close(db);
 		return -1;
 	}
@@ -445,6 +447,7 @@ int record_insert(int id, int addr, int device_handle, long int timestamp,int pe
 	if (SQLITE_OK != rc)
 	{
 		fprintf(stderr, "can't add record to memory database, sqlcmd=%s, err:%s\n", sqlcmd, errMsg);
+		sqlite3_free(errMsg);
 		return -1;
 	}
 
@@ -461,6 +464,7 @@ int record_update(int addr,int period,int value)
 	if (SQLITE_OK != rc)
 	{
 		fprintf(stderr, "can't update record to memory database, sqlcmd=%s, err:%s\n", sqlcmd, errMsg);
+		sqlite3_free(errMsg);
 		return -1;
 	}
 
@@ -477,6 +481,7 @@ int record_update_state(int addr,int state)
 	if (SQLITE_OK != rc)
 	{
 		fprintf(stderr, "can't update record to memory database, sqlcmd=%s, err:%s\n", sqlcmd, errMsg);
+		sqlite3_free(errMsg);
 		return -1;
 	}
 
@@ -493,6 +498,7 @@ int record_delete(int addr)
 	if (SQLITE_OK != rc)
 	{
 		fprintf(stderr, "can't delete record %s\n", errMsg);
+		sqlite3_free(errMsg);
 		return -1;
 	}
 
@@ -513,9 +519,11 @@ int  record_query(long int current_time , pfun pf)//记录查询
 		rc = sqlite3_get_table(db, sqlcmd, &pRecord, &row, &column, &errMsg);//得到一維數組pRecord，此数据符合：记录的时间《=最迟记录时间 也就是迟于允许时间
 		if (SQLITE_OK != rc) {
 			fprintf(stderr, "can't get table %s\n",  errMsg);
+			sqlite3_free(errMsg);
 			return -1;
 		}
 		pf(pRecord,row,column);//调用alarm process_query_result，带入一维数组数据
+		sqlite3_free_table(pRecord);
     }
 
 	return 0 ;
@@ -535,6 +543,7 @@ int time_field_update(int addr, long int timestamp)
 	if (SQLITE_OK != rc)
 	{
 		fprintf(stderr, "cat't update record %s\n", errMsg);
+		sqlite3_free(errMsg);
 		return -1;
 	}
 
